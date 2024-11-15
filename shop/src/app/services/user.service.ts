@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
+import { ActionResponse } from '../models/actionresponse';
+import { SessionValues } from '../models/sessionvalues';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
+  private SESSION_KEY = 'user_session';
+
   userList: User[] = [
     {
       id_user: 1,
       name: 'administrador',
-      password: 'admin',
+      password: 'adminadmin',
       email: 'admin@mail.cl',
       role: 'admin',
       phone: '56988776655'
@@ -27,10 +31,10 @@ export class UserService {
 
   constructor() { }
 
-  createUser(name: string, password: string, email: string, phone: string): boolean {
+  createUser(name: string, password: string, email: string, phone: string): ActionResponse {
 
     if (this.checkEmail(email)) {
-      return false;
+      return { IsSuccess: false, Message: "Email ya esta en uso" }
     }
 
     let newUser: User = {} as User;
@@ -47,11 +51,44 @@ export class UserService {
 
     this.userList.push(newUser);
 
-    return true;
+    return { IsSuccess: true, Message: "Se ha registrado con exito" };
   }
 
   checkEmail(email: string): boolean {
     return (this.userList.find(user => user.email === email) !== undefined)
   }
-  
+
+
+  login(email: string, password: string): ActionResponse {
+    let foundUser: User | undefined = this.userList.find(user => user.email === email && user.password == password);
+
+    if (foundUser === undefined) {
+      return { IsSuccess: false, Message: "Error, revise sus credenciales." };
+    }
+
+    let sessionUser: SessionValues = {
+      id_user: foundUser.id_user,
+      name: foundUser.name,
+      email: foundUser.email,
+      role: foundUser.role
+    }
+
+    sessionStorage.setItem(this.SESSION_KEY, JSON.stringify(sessionUser));
+
+    return { IsSuccess: true, Message: "Se ha logueado" };
+  }
+
+  getSession(): SessionValues | undefined {
+    const sessionData = sessionStorage.getItem(this.SESSION_KEY);
+    return sessionData ? JSON.parse(sessionData) : undefined;
+  }
+
+  clearSession(): void {
+    sessionStorage.removeItem(this.SESSION_KEY);
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.getSession();
+  }
+
 }

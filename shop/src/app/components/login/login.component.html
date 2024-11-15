@@ -1,0 +1,36 @@
+<div class="container my-5">
+    <form [formGroup]="loginForm" class="needs-validation" (ngSubmit)="onLogin()">
+
+        <h2 class="mb-3">Inicio de Sesión</h2>
+        <div class="mb-3">
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <input type="email" class="form-control" id="email" name="email" formControlName="email" required>
+            <div *ngIf="email?.invalid && email?.touched" class="text-danger">
+                <small *ngIf="email?.hasError('required')">El correo electrónico es obligatorio.</small>
+                <small *ngIf="email?.hasError('email')">Ingresa un correo electrónico válido.</small>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="password" name="password" formControlName="password" required>
+            <div *ngIf="password?.invalid && password?.touched" class="text-danger">
+                <small *ngIf="password?.hasError('required')">La contraseña es obligatoria.</small>
+                <small *ngIf="password?.hasError('minlength') || password?.hasError('maxlength')">Formato no
+                    válido.</small>
+            </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"
+                aria-hidden="true"></span>
+            {{ isLoading ? 'Ingresando...' : 'Ingresar' }}
+        </button>
+        
+        <a routerLink="#" class="d-block text-center mt-3">¿Olvidaste tu contraseña?</a>
+    </form>
+</div>
