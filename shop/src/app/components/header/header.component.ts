@@ -1,16 +1,33 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { UserService } from '../../services/user.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [],
+  imports: [CommonModule,
+    RouterModule
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
+  userRole: string = "";
+  isLoggedIn: boolean = false;
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private userService: UserService) { }
+
+  ngOnInit(): void {
+    this.userService.getRole().subscribe(status => {
+      this.userRole = status;
+    });
+    this.userService.isAuthenticated().subscribe(status => {
+      this.isLoggedIn = status;
+    });
+  }
 
   onLogin() {
     this.router.navigate(['/login']);
@@ -18,5 +35,9 @@ export class HeaderComponent {
 
   onRegister() {
     this.router.navigate(['/registro']);
+  }
+
+  loginOut() {
+    
   }
 }

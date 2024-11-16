@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user';
 import { ActionResponse } from '../models/actionresponse';
 import { SessionValues } from '../models/sessionvalues';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private SESSION_KEY = 'user_session';
+  private userSession: SessionValues = { } as SessionValues;
+  private isLoggedIn = new BehaviorSubject<boolean>(false);
+  private userRole = new BehaviorSubject<string>("");
 
   userList: User[] = [
     {
@@ -63,32 +66,42 @@ export class UserService {
     let foundUser: User | undefined = this.userList.find(user => user.email === email && user.password == password);
 
     if (foundUser === undefined) {
+      this.isLoggedIn.next(false);
+      this.userRole.next("");
       return { IsSuccess: false, Message: "Error, revise sus credenciales." };
     }
 
-    let sessionUser: SessionValues = {
+    this.userSession = {
       id_user: foundUser.id_user,
       name: foundUser.name,
       email: foundUser.email,
       role: foundUser.role
     }
 
-    sessionStorage.setItem(this.SESSION_KEY, JSON.stringify(sessionUser));
+    this.isLoggedIn.next(true);
+    this.userRole.next(foundUser.role);
 
     return { IsSuccess: true, Message: "Se ha logueado" };
   }
 
-  getSession(): SessionValues | undefined {
-    const sessionData = sessionStorage.getItem(this.SESSION_KEY);
-    return sessionData ? JSON.parse(sessionData) : undefined;
+  getSession(): SessionValues {
+    return this.userSession;
   }
 
   clearSession(): void {
-    sessionStorage.removeItem(this.SESSION_KEY);
+    this.userSession = { } as SessionValues;
   }
 
-  isAuthenticated(): boolean {
-    return !!this.getSession();
+  getRole(){
+    return this.userRole.asObservable();
+  }
+
+  isAuthenticated() {
+    return this.isLoggedIn.asObservable();
+  }
+
+  isLogged():boolean{
+    return this.isLoggedIn.value;
   }
 
 }
