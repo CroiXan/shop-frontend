@@ -5,8 +5,10 @@ import { ManagementComponent } from './components/management/management.componen
 import { authGuard } from './auth.guard';
 import { PassResetRequestComponent } from './components/pass-reset-request/pass-reset-request.component';
 import { PassResetComponent } from './components/pass-reset/pass-reset.component';
+import { CatalogProductListComponent } from './components/catalog-product-list/catalog-product-list.component';
 
 export const routes: Routes = [
+    { path: '', component: CatalogProductListComponent },
     { path: 'registro', component: RegistroComponent },
     { path: 'login', component: LoginComponent },
     { path: 'recuperar-contrasena', component: PassResetRequestComponent },
