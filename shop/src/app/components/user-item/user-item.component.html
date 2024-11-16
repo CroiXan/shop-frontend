@@ -1,0 +1,38 @@
+<div class="card mt-3">
+    <div class="card-header">
+        <h4>Id: {{ userData.id_user}}</h4>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+
+            <div class="col-md-6">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <strong>Nombre:</strong> {{ userData.name }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Email:</strong> {{ userData.email }}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-6">
+                <h5>Rol</h5>
+                <form [formGroup]="formUser" (ngSubmit)="updateRole()">
+                    <div class="mb-3">
+                        <select id="role" class="form-select" name="role" formControlName="selector"
+                            (ngModelChange)="onValueChange()">
+                            <option *ngFor="let role of roles" [value]="role">
+                                {{ role }}
+                            </option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" *ngIf="showConfirm">
+                        Actualizar Rol
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
