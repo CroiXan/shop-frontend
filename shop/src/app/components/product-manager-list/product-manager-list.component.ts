@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Product } from '../../models/product';
 import { CommonModule } from '@angular/common';
 
@@ -12,14 +12,11 @@ import { CommonModule } from '@angular/common';
 export class ProductManagerListComponent {
 
   @Input() products!: Product[];
+  @Output() selectedProduct = new EventEmitter<Product>();
   loading = false;
   errorMessage = '';
 
-
-  ngOnInit(): void {
-  }
-
-  editProduct(id: number): void {
-    
+  editProduct(product: Product): void {
+    this.selectedProduct.emit(product);
   }
 }

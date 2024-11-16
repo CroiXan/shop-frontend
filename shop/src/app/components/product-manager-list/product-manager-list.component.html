@@ -9,7 +9,7 @@
           <h5 class="card-title">{{ product.name }}</h5>
           <p class="card-text">SKU: {{ product.sku }}</p>
           <p class="card-text">Precio: {{ product.price | currency }}</p>
-          <button class="btn btn-primary" (click)="editProduct(product.id_product!)">Editar</button>
+          <button class="btn btn-primary" (click)="editProduct(product)">Editar</button>
         </div>
       </div>
     </div>

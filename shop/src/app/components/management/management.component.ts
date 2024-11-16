@@ -8,6 +8,7 @@ import { UserItemComponent } from "../user-item/user-item.component";
 import { Product } from '../../models/product';
 import { ProductService } from '../../services/product.service';
 import { ProductManagerListComponent } from "../product-manager-list/product-manager-list.component";
+import { ProductFormComponent } from '../product-form/product-form.component';
 
 @Component({
   selector: 'app-management',
@@ -17,7 +18,8 @@ import { ProductManagerListComponent } from "../product-manager-list/product-man
     UserInfoComponent,
     UserEditComponent,
     UserItemComponent,
-    ProductManagerListComponent
+    ProductManagerListComponent,
+    ProductFormComponent
 ],
   templateUrl: './management.component.html',
   styleUrl: './management.component.css'
@@ -26,8 +28,10 @@ export class ManagementComponent {
   user!: User;
   userRole: string = "";
   toggleUserInfo: boolean = true;
+  showProductEdit: boolean = false;
   userList: User[] = [];
   productList: Product[] = [];
+  produtToEdit: Product = {} as Product;
 
   constructor( 
     private userService: UserService,
@@ -53,4 +57,27 @@ export class ManagementComponent {
     this.user = this.userService.getCurrentUser();
   }
 
+  onProductSelected(product: Product){
+    if (product.id_product != undefined && product.id_product > 0) {
+      this.produtToEdit = product;
+      this.showProductEdit = true;
+    }
+  }
+
+  cancelProductEdit(){
+    this.produtToEdit = {} as Product;
+    this.showProductEdit = false;
+  }
+
+  savedProduct(){
+    this.produtToEdit = {} as Product;
+    this.showProductEdit = false;
+    this.productList = this.productService.getAllProducts();
+  }
+
+  createProduct(){
+    this.produtToEdit = {} as Product;
+    this.produtToEdit.id_product = 0;
+    this.showProductEdit = true;
+  }
 }

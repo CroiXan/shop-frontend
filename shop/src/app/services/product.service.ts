@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../models/product';
+import { ActionResponse } from '../models/actionresponse';
 
 @Injectable({
   providedIn: 'root'
@@ -113,5 +114,43 @@ export class ProductService {
 
   getAllProducts(): Product[]{
     return this.productList;
+  }
+
+  createProduct(newProduct: Product): ActionResponse{
+
+    let foundProduct: Product | undefined = this.productList.find(product => product.id_product == newProduct.id_product || product.sku == newProduct.sku);
+
+    if (foundProduct !== undefined) {
+      return { IsSuccess: false, Message: "El producto se encuentra registrado" };
+    }
+
+    const newId = this.productList.reduce((maxId, product) => {
+      return Math.max(maxId, product.id_product);
+    }, 0) + 1;
+
+    newProduct.id_product = newId;
+
+    this.productList.push(newProduct);
+    
+    return { IsSuccess: true, Message: "Se ha creado con exito" };
+  }
+
+  updateProduct(updatedProduct: Product): ActionResponse{
+    
+    let productIndex = this.productList.findIndex((product) => product.id_product === updatedProduct.id_product && product.sku === updatedProduct.sku);
+
+    if (productIndex === -1) {
+      return { IsSuccess: false, Message: "Error al actualizar producto" };
+    }
+
+    this.productList[productIndex].sku = updatedProduct.sku;
+    this.productList[productIndex].name = updatedProduct.name;
+    this.productList[productIndex].price = updatedProduct.price;
+    this.productList[productIndex].discount = updatedProduct.discount;
+    this.productList[productIndex].category = updatedProduct.category;
+    this.productList[productIndex].description = updatedProduct.description;
+    this.productList[productIndex].stock = updatedProduct.stock;
+
+    return { IsSuccess: true, Message: "Se ha actualizado con exito" };
   }
 }
