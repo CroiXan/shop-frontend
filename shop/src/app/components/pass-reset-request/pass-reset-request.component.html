@@ -1,0 +1,19 @@
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header text-center">
+            <h4>Recuperar Contraseña</h4>
+        </div>
+        <div class="card-body">
+            <form [formGroup]="emailForm" (ngSubmit)="onSubmit()">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" id="email" class="form-control" formControlName="email" name="email" required
+                        placeholder="Ingresa tu correo" />
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    Enviar Instrucciones
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

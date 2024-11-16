@@ -36,7 +36,7 @@
                     aria-hidden="true"></span>
                 {{ isLoading ? 'Ingresando...' : 'Ingresar' }}</button>
                 
-            <a routerLink="#" class="d-block text-center mt-3">¿Olvidaste tu contraseña?</a>
+            <a [routerLink]="['/recuperar-contrasena']" class="d-block text-center mt-3">¿Olvidaste tu contraseña?</a>
         </form>
     </main>
 </div>

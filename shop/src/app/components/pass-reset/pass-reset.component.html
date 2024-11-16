@@ -1,0 +1,37 @@
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header text-center">
+            <h4>Establecer Nueva Contraseña</h4>
+        </div>
+        <div class="card-body">
+            <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()">
+                <div class="mb-3">
+                    <label for="password" class="form-label">Nueva Contraseña</label>
+                    <input type="password" id="password" class="form-control" formControlName="password" name="password"
+                        required placeholder="Ingresa tu nueva contraseña" />
+                    <div *ngIf="password?.invalid && password?.touched" class="text-danger">
+                        <small *ngIf="password?.hasError('required')">La contraseña es obligatoria.</small>
+                        <small *ngIf="password?.hasError('minlength') || password?.hasError('maxlength')">Debe tener
+                            entre 8 y 20 caracteres.</small>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmpass" class="form-label">Confirmar Contraseña</label>
+                    <input type="password" id="confirmpass" class="form-control" formControlName="confirmpass"
+                        name="confirmpass" required placeholder="Confirma tu nueva contraseña" />
+                    <div *ngIf="confirmpass?.invalid && confirmpass?.touched" class="text-danger">
+                        <small *ngIf="confirmpass?.hasError('required')">Confirmar contraseña es obligatorio.</small>
+                        <small *ngIf="confirmpass?.hasError('minlength') || confirmpass?.hasError('maxlength')">Debe
+                            tener entre 8 y 20 caracteres.</small>
+                    </div>
+                    <div *ngIf="passwordForm?.invalid && confirmpass?.touched && password?.touched" class="text-danger">
+                        <small *ngIf="passwordForm?.hasError('notSamePassword')">Las contraseñas no coinciden.</small>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    Guardar Contraseña
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -12,6 +12,7 @@ export class UserService {
   private userSession: SessionValues = {} as SessionValues;
   private isLoggedIn = new BehaviorSubject<boolean>(false);
   private userRole = new BehaviorSubject<string>("");
+  private emailForReset: String = "";
 
   userList: User[] = [
     {
@@ -162,5 +163,23 @@ export class UserService {
   getAllUsers(): User[] {
     return this.userList;
   }
+
+  setEmailForReset(email: string){
+    this.emailForReset = email;
+  }
+
+  resetPassword(password: string): ActionResponse{
+
+    let userIndex = this.userList.findIndex((user) => user.email === this.emailForReset);
+
+    if (userIndex === -1) {
+      return { IsSuccess: false, Message: "Error al actualizar contraseña" };
+    }
+
+    this.userList[userIndex].password = password;
+
+    return { IsSuccess: true, Message: "Se ha actualizado la Contraseña" };
+  }
+
 }
 

@@ -21,7 +21,6 @@
                 <h5>Rol</h5>
                 <form [formGroup]="formUser" (ngSubmit)="updateRole()">
                     <div class="mb-3">
-                        <label for="role" class="form-label">Selecciona un nuevo rol</label>
                         <select id="role" class="form-select" name="role" formControlName="selector"
                             (ngModelChange)="onValueChange()">
                             <option *ngFor="let role of roles" [value]="role">
