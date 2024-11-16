@@ -142,5 +142,25 @@ export class UserService {
     return { IsSuccess: true, Message: "Se ha actualizado el usuario" };
   }
 
+  changeRole(userId: number, newRole: string): ActionResponse{
+
+    let userIndex = this.userList.findIndex((user) => user.id_user === userId);
+
+    if (userIndex === -1) {
+      return { IsSuccess: false, Message: "Error al actualizar usuario" };
+    }
+
+    this.userList[userIndex].role = newRole;
+
+    if (this.userSession.id_user = userId) {
+      this.userSession.role = newRole;
+    }
+
+    return { IsSuccess: true, Message: "Se ha actualizado el usuario" };
+  }
+
+  getAllUsers(): User[] {
+    return this.userList;
+  }
 }
 
