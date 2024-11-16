@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class UserService {
 
-  private userSession: SessionValues = { } as SessionValues;
+  private userSession: SessionValues = {} as SessionValues;
   private isLoggedIn = new BehaviorSubject<boolean>(false);
   private userRole = new BehaviorSubject<string>("");
 
@@ -75,7 +75,8 @@ export class UserService {
       id_user: foundUser.id_user,
       name: foundUser.name,
       email: foundUser.email,
-      role: foundUser.role
+      role: foundUser.role,
+      phone: foundUser.phone
     }
 
     this.isLoggedIn.next(true);
@@ -89,10 +90,10 @@ export class UserService {
   }
 
   clearSession(): void {
-    this.userSession = { } as SessionValues;
+    this.userSession = {} as SessionValues;
   }
 
-  getRole(){
+  getRole() {
     return this.userRole.asObservable();
   }
 
@@ -100,8 +101,18 @@ export class UserService {
     return this.isLoggedIn.asObservable();
   }
 
-  isLogged():boolean{
+  isLogged(): boolean {
     return this.isLoggedIn.value;
   }
 
+  getCurrentUser(): User {
+    return {
+      id_user: this.userSession.id_user,
+      name: this.userSession.name,
+      email: this.userSession.email,
+      phone: this.userSession.phone,
+      password: "",
+      role: this.userSession.role
+    }
+  }
 }

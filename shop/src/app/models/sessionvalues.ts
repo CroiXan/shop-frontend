@@ -3,4 +3,5 @@ export interface SessionValues{
     name: string;
     email: string;
     role: string;
+    phone: string;
 }
