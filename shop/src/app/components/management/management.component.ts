@@ -80,4 +80,8 @@ export class ManagementComponent {
     this.produtToEdit.id_product = 0;
     this.showProductEdit = true;
   }
+
+  refreshProductList(){
+    this.productList = this.productService.getAllProducts();
+  }
 }

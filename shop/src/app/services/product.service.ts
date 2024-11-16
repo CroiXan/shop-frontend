@@ -153,4 +153,18 @@ export class ProductService {
 
     return { IsSuccess: true, Message: "Se ha actualizado con exito" };
   }
+
+  deleteProduct(productId: number): ActionResponse{
+
+    let productIndex = this.productList.findIndex((product) => product.id_product === productId);
+
+    if (productIndex === -1) {
+      return { IsSuccess: false, Message: "Error al eliminar producto" };
+    }
+
+    this.productList.splice(productIndex,1);
+
+    return { IsSuccess: true, Message: "Se ha eleminado con exito" };
+  }
+
 }

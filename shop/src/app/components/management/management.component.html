@@ -57,7 +57,7 @@
         <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab" *ngIf="userRole === 'admin' || userRole === 'editor'">
             <button class="btn btn-primary" (click)="createProduct()">Crear</button>
             <app-product-manager-list [products]="productList" (selectedProduct)="onProductSelected($event)" *ngIf="!showProductEdit"></app-product-manager-list>
-            <app-product-form [productData]="produtToEdit" (backAction)="cancelProductEdit()" (endSaveProduct)="savedProduct()" *ngIf="showProductEdit"></app-product-form>
+            <app-product-form [productData]="produtToEdit" (backAction)="cancelProductEdit()" (endSaveProduct)="refreshProductList()" (refreshProducts)="savedProduct()" *ngIf="showProductEdit"></app-product-form>
         </div>
 
         <div class="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-tab" *ngIf="userRole === 'admin' || userRole === 'editor'">
