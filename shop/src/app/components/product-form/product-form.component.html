@@ -1,0 +1,89 @@
+<div class="container mt-4">
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+        <h3>{{ productId > 0 ? 'Editar Producto' : 'Crear Producto' }}</h3>
+
+        <div class="mb-3">
+            <label for="sku" class="form-label">SKU</label>
+            <input id="sku" type="text" class="form-control" formControlName="sku" placeholder="Ingrese el SKU" />
+            <div *ngIf="sku?.invalid && sku?.touched" class="text-danger">
+                <small *ngIf="sku?.hasError('required')">El SKU es obligatorio.</small>
+                <small *ngIf="sku?.hasError('minlength') || sku?.hasError('maxlength')">Debe tener entre 7 y 100
+                    caracteres.</small>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre</label>
+            <input id="name" type="text" class="form-control" formControlName="name"
+                placeholder="Ingrese el nombre del producto" />
+            <div *ngIf="name?.invalid && name?.touched" class="text-danger">
+                <small *ngIf="name?.hasError('required')">El Nombre es obligatorio.</small>
+                <small *ngIf="name?.hasError('minlength') || name?.hasError('maxlength')">Debe tener entre 3 y 100
+                    caracteres.</small>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="price" class="form-label">Precio</label>
+            <input id="price" type="number" class="form-control" formControlName="price"
+                placeholder="Ingrese el precio del producto" />
+            <div *ngIf="productForm.get('price')?.touched && productForm.get('price')?.invalid" class="text-danger">
+                El precio es requerido y debe ser mayor o igual a 0.
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="discount" class="form-label">Descuento (%)</label>
+            <input id="discount" type="number" class="form-control" formControlName="discount"
+                placeholder="Ingrese el descuento (0-100)" />
+            <div *ngIf="discount?.invalid && discount?.touched" class="text-danger">
+                <small *ngIf="discount?.hasError('min') || discount?.hasError('max')">El descuento debe ser
+                    entre 0 y 100.</small>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">Categoría</label>
+            <input id="category" type="text" class="form-control" formControlName="category"
+                placeholder="Ingrese la categoría del producto" />
+            <div *ngIf="category?.invalid && category?.touched" class="text-danger">
+                <small *ngIf="category?.hasError('required')">Categoría es obligatorio.</small>
+                <small *ngIf="category?.hasError('minlength') || category?.hasError('maxlength')">Debe tener entre 3 y
+                    100 caracteres.</small>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Descripción</label>
+            <textarea id="description" class="form-control" formControlName="description"
+                placeholder="Ingrese una descripción"></textarea>
+            <div *ngIf="description?.invalid && description?.touched" class="text-danger">
+                <small *ngIf="description?.hasError('required')">Descripción es obligatorio.</small>
+                <small *ngIf="description?.hasError('maxlength')">No debe exceder los 1000 caracteres.</small>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="stock" class="form-label">Stock</label>
+            <input id="stock" type="number" class="form-control" formControlName="stock"
+                placeholder="Ingrese la cantidad en stock" />
+            <div *ngIf="stock?.invalid && stock?.touched" class="text-danger">
+                <small *ngIf="stock?.hasError('required')">Stock es obligatorio.</small>
+                <small *ngIf="stock?.hasError('min') || stock?.hasError('max')">Debe ser mayor o igual a 0.</small>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-6">
+                <button type="button" class="btn btn-secondary w-100" (click)="onCancel()">
+                    Volver
+                </button>
+            </div>
+            <div class="col-6">
+                <button type="submit" class="btn btn-primary w-100" [disabled]="productForm.invalid">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

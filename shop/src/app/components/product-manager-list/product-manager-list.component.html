@@ -1,0 +1,22 @@
+<div *ngIf="loading">Cargando productos...</div>
+<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+<div *ngIf="!loading && products.length > 0">
+  <div class="row">
+    <div *ngFor="let product of products" class="col-12 col-sm-6 col-lg-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text">SKU: {{ product.sku }}</p>
+          <p class="card-text">Precio: {{ product.price | currency }}</p>
+          <button class="btn btn-primary" (click)="editProduct(product)">Editar</button>
+          <button class="btn btn-primary" (click)="deleteProduct(product.id_product)">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!loading && products.length === 0">
+  No hay productos disponibles.
+</div>

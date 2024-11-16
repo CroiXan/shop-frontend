@@ -5,11 +5,22 @@ import { User } from '../../models/user';
 import { UserInfoComponent } from "../user-info/user-info.component";
 import { UserEditComponent } from "../user-edit/user-edit.component";
 import { UserItemComponent } from "../user-item/user-item.component";
+import { Product } from '../../models/product';
+import { ProductService } from '../../services/product.service';
+import { ProductManagerListComponent } from "../product-manager-list/product-manager-list.component";
+import { ProductFormComponent } from '../product-form/product-form.component';
 
 @Component({
   selector: 'app-management',
   standalone: true,
-  imports: [CommonModule, UserInfoComponent, UserEditComponent, UserItemComponent],
+  imports: [
+    CommonModule,
+    UserInfoComponent,
+    UserEditComponent,
+    UserItemComponent,
+    ProductManagerListComponent,
+    ProductFormComponent
+],
   templateUrl: './management.component.html',
   styleUrl: './management.component.css'
 })
@@ -17,9 +28,14 @@ export class ManagementComponent {
   user!: User;
   userRole: string = "";
   toggleUserInfo: boolean = true;
+  showProductEdit: boolean = false;
   userList: User[] = [];
+  productList: Product[] = [];
+  produtToEdit: Product = {} as Product;
 
-  constructor( private userService: UserService) { }
+  constructor( 
+    private userService: UserService,
+    private productService: ProductService) { }
 
   ngOnInit(): void {
     this.userService.getRole().subscribe(status => {
@@ -28,6 +44,7 @@ export class ManagementComponent {
     this.user = this.userService.getCurrentUser();
     if (this.userRole == "admin" || this.userRole == "editor") {
       this.userList = this.userService.getAllUsers();
+      this.productList = this.productService.getAllProducts();
     }
   }
 
@@ -38,5 +55,33 @@ export class ManagementComponent {
   refreshUser(){
     this.toggleUserInfo = true;
     this.user = this.userService.getCurrentUser();
+  }
+
+  onProductSelected(product: Product){
+    if (product.id_product != undefined && product.id_product > 0) {
+      this.produtToEdit = product;
+      this.showProductEdit = true;
+    }
+  }
+
+  cancelProductEdit(){
+    this.produtToEdit = {} as Product;
+    this.showProductEdit = false;
+  }
+
+  savedProduct(){
+    this.produtToEdit = {} as Product;
+    this.showProductEdit = false;
+    this.productList = this.productService.getAllProducts();
+  }
+
+  createProduct(){
+    this.produtToEdit = {} as Product;
+    this.produtToEdit.id_product = 0;
+    this.showProductEdit = true;
+  }
+
+  refreshProductList(){
+    this.productList = this.productService.getAllProducts();
   }
 }
