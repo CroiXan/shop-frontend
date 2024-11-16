@@ -40,7 +40,8 @@
     <div class="tab-content mt-3" id="myTabContent">
 
         <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-            <app-user-info [userData]="user"></app-user-info>
+            <app-user-info [userData]="user" (buttonEditUser)="showEditUser()" *ngIf="toggleUserInfo"></app-user-info>
+            <app-user-edit [userData]="user" (buttonSaveEdit)="refreshUser()" *ngIf="!toggleUserInfo"></app-user-edit>
         </div>
 
         <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">

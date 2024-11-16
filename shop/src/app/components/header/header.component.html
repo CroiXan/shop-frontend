@@ -6,7 +6,7 @@
             </a>
             <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
                 <a class="me-3 py-2 text-white text-decoration-none" [routerLink]="['/']">Inicio</a>
-                <a class="me-3 py-2 text-white text-decoration-none" [routerLink]="['/perfil']">Perfil</a>
+                <a class="me-3 py-2 text-white text-decoration-none" [routerLink]="['/perfil']" *ngIf="isLoggedIn">Perfil</a>
             </nav>
             <div>
                 <button class="btn btn-outline-light me-2" *ngIf="!isLoggedIn" (click)="onLogin()">Iniciar sesión</button>

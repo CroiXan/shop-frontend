@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
@@ -12,15 +12,19 @@ import { CommonModule } from '@angular/common';
 })
 export class UserInfoComponent {
   @Input() userData!: User;
+  @Output() buttonEditUser = new EventEmitter<void>();
 
   userRole: string = "";
 
-  constructor( private userService: UserService) { }
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
     this.userService.getRole().subscribe(status => {
       this.userRole = status;
     });
   }
-  
+
+  onEditUser(): void {
+    this.buttonEditUser.emit();
+  }
 }

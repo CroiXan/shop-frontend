@@ -38,6 +38,7 @@ export class HeaderComponent {
   }
 
   loginOut() {
-    
+    this.userService.clearSession();
+    this.router.navigate(['/']);
   }
 }

@@ -20,14 +20,14 @@ export class UserService {
       password: 'adminadmin',
       email: 'admin@mail.cl',
       role: 'admin',
-      phone: '56988776655'
+      phone: '988776655'
     },
     {
       id_user: 2,
       name: 'juan perez',
-      password: 'qwerty',
+      password: 'qwertyui',
       email: 'mail@mail.cl',
-      phone: '56911223344',
+      phone: '911223344',
       role: 'user'
     }
   ];
@@ -91,6 +91,8 @@ export class UserService {
 
   clearSession(): void {
     this.userSession = {} as SessionValues;
+    this.isLoggedIn.next(false);
+    this.userRole.next("");
   }
 
   getRole() {
@@ -115,4 +117,30 @@ export class UserService {
       role: this.userSession.role
     }
   }
+
+  updateUser(userInput: User): ActionResponse {
+    let usersWithEmail: User[] = this.userList.filter(user => user.id_user !== userInput.id_user && user.email === userInput.email);
+
+    if (usersWithEmail.length > 0) {
+      return { IsSuccess: false, Message: "Error, el email ya esta en uso" };
+    }
+
+    let userIndex = this.userList.findIndex((user) => user.id_user === userInput.id_user);
+
+    if (userIndex === -1) {
+      return { IsSuccess: false, Message: "Error al actualizar usuario" };
+    }
+
+    this.userList[userIndex].email = userInput.email;
+    this.userList[userIndex].name = userInput.name;
+    this.userList[userIndex].phone = userInput.phone;
+
+    this.userSession.name = userInput.name;
+    this.userSession.email = userInput.email;
+    this.userSession.phone = userInput.phone;
+
+    return { IsSuccess: true, Message: "Se ha actualizado el usuario" };
+  }
+
 }
+
