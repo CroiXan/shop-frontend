@@ -40,11 +40,19 @@
 
         <div class="mb-3">
             <label for="confirmpass" class="form-label">Confirmar Contraseña</label>
-            <input type="confirmpass" id="confirmpass" class="form-control" formControlName="confirmpass">
+            <input type="password" id="confirmpass" class="form-control" formControlName="confirmpass">
             <div *ngIf="confirmpass?.invalid && confirmpass?.touched" class="text-danger">
                 <small *ngIf="confirmpass?.hasError('required')">Confirmar contraseña es obligatorio.</small>
                 <small *ngIf="confirmpass?.hasError('minlength') || confirmpass?.hasError('maxlength')">Debe tener entre 8 y 20 caracteres.</small>
+                <small *ngIf="registerForm?.hasError('notSamePassword')">Las contraseñas no coinciden.</small>
             </div>
+            <div *ngIf="registerForm?.invalid && confirmpass?.touched && password?.touched" class="text-danger">
+                <small *ngIf="registerForm?.hasError('notSamePassword')">Las contraseñas no coinciden.</small>
+            </div>
+        </div>
+        
+        <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
         </div>
 
         <button type="submit" class="w-100 btn btn-primary" [disabled]="registerForm.invalid">Registrarse</button>
