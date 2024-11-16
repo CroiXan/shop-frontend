@@ -5,11 +5,20 @@ import { User } from '../../models/user';
 import { UserInfoComponent } from "../user-info/user-info.component";
 import { UserEditComponent } from "../user-edit/user-edit.component";
 import { UserItemComponent } from "../user-item/user-item.component";
+import { Product } from '../../models/product';
+import { ProductService } from '../../services/product.service';
+import { ProductManagerListComponent } from "../product-manager-list/product-manager-list.component";
 
 @Component({
   selector: 'app-management',
   standalone: true,
-  imports: [CommonModule, UserInfoComponent, UserEditComponent, UserItemComponent],
+  imports: [
+    CommonModule,
+    UserInfoComponent,
+    UserEditComponent,
+    UserItemComponent,
+    ProductManagerListComponent
+],
   templateUrl: './management.component.html',
   styleUrl: './management.component.css'
 })
@@ -18,8 +27,11 @@ export class ManagementComponent {
   userRole: string = "";
   toggleUserInfo: boolean = true;
   userList: User[] = [];
+  productList: Product[] = [];
 
-  constructor( private userService: UserService) { }
+  constructor( 
+    private userService: UserService,
+    private productService: ProductService) { }
 
   ngOnInit(): void {
     this.userService.getRole().subscribe(status => {
@@ -28,6 +40,7 @@ export class ManagementComponent {
     this.user = this.userService.getCurrentUser();
     if (this.userRole == "admin" || this.userRole == "editor") {
       this.userList = this.userService.getAllUsers();
+      this.productList = this.productService.getAllProducts();
     }
   }
 
@@ -39,4 +52,5 @@ export class ManagementComponent {
     this.toggleUserInfo = true;
     this.user = this.userService.getCurrentUser();
   }
+
 }
