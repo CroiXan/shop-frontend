@@ -8,10 +8,12 @@ import { PassResetComponent } from './components/pass-reset/pass-reset.component
 import { CatalogProductListComponent } from './components/catalog-product-list/catalog-product-list.component';
 
 export const routes: Routes = [
-    { path: '', component: CatalogProductListComponent },
+    { path: 'catalogo', component: CatalogProductListComponent },
     { path: 'registro', component: RegistroComponent },
     { path: 'login', component: LoginComponent },
     { path: 'recuperar-contrasena', component: PassResetRequestComponent },
     { path: 'cambiar-contrasena', component: PassResetComponent },
-    { path: 'perfil', component: ManagementComponent, canActivate: [authGuard] }
+    { path: 'perfil', component: ManagementComponent, canActivate: [authGuard] },
+    { path: '', redirectTo: '/catalogo', pathMatch: 'full' },
+    { path: '/', redirectTo: '/catalogo', pathMatch: 'full' }
 ];

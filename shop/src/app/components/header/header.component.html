@@ -1,11 +1,11 @@
 <header class="p-3 bg-dark text-white">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-between">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+            <a [routerLink]="['/']" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
                 <span class="fs-4">Encuentra Fácil</span>
             </a>
             <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-                <a class="me-3 py-2 text-white text-decoration-none" [routerLink]="['/']">Inicio</a>
+                <a class="me-3 py-2 text-white text-decoration-none" [routerLink]="['/catalogo']">Inicio</a>
                 <a class="me-3 py-2 text-white text-decoration-none" [routerLink]="['/perfil']" *ngIf="isLoggedIn">Perfil</a>
             </nav>
             <div>
