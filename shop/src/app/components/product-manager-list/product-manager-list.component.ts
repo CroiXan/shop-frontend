@@ -26,10 +26,15 @@ export class ProductManagerListComponent {
   }
 
   deleteProduct(productId: number){
-    let result: ActionResponse = this.productService.deleteProduct(productId);
-    alert(result.Message);
-    if (result.IsSuccess) {
-      this.refreshProducts.emit();
-    }
+    this.productService.deleteProduct(productId).subscribe({
+      next: response2 => {
+        alert("Se ha eleminado con exito");
+        this.refreshProducts.emit();
+      },
+      error: error => {
+        alert("Error al eliminar producto");
+      },
+    });
   }
+  
 }

@@ -130,23 +130,29 @@ export class ProductService {
     return this.http.get<Product[]>(this.apiURL, { headers });
   }
 
-  createProduct(newProduct: Product): ActionResponse {
+  createProduct(newProduct: Product): Observable<Product> {
 
-    let foundProduct: Product | undefined = this.productList.find(product => product.id_product == newProduct.id_product || product.sku == newProduct.sku);
+    const headers = this.getHeaders();
 
-    if (foundProduct !== undefined) {
-      return { IsSuccess: false, Message: "El producto se encuentra registrado" };
-    }
+    return this.http.get<Product[]>(this.apiURL, { headers }).pipe(
+      switchMap(response1 => {
+        let productIndex = response1.findIndex((product) => product.sku === newProduct.sku);
 
-    const newId = this.productList.reduce((maxId, product) => {
-      return Math.max(maxId, product.id_product);
-    }, 0) + 1;
+        if (productIndex > -1) {
+          throw new Error("El producto se encuentra registrado");
+        }
+        return this.http.post<Product>(this.apiURL, newProduct, { headers }).pipe(
+          catchError(error => {
+            return throwError(() => error);
+          })
+        )
+      }
+      ),
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
 
-    newProduct.id_product = newId;
-
-    this.productList.push(newProduct);
-
-    return { IsSuccess: true, Message: "Se ha creado con exito" };
   }
 
   updateProduct(updatedProduct: Product): Observable<Product> {
@@ -158,7 +164,7 @@ export class ProductService {
         let productIndex = response1.findIndex((product) => product.id_product === updatedProduct.id_product && product.sku === updatedProduct.sku);
 
         if (productIndex === -1) {
-          throw new Error("Se ha actualizado con exito");
+          throw new Error("Error al actualizar producto");
         }
         return this.http.put<Product>(this.apiURL, updatedProduct, { headers }).pipe(
           catchError(error => {
@@ -171,19 +177,15 @@ export class ProductService {
         return throwError(() => error);
       })
     );
+
   }
 
-  deleteProduct(productId: number): ActionResponse {
+  deleteProduct(productId: number): Observable<string> {
 
-    let productIndex = this.productList.findIndex((product) => product.id_product === productId);
+    const headers = this.getHeaders();
 
-    if (productIndex === -1) {
-      return { IsSuccess: false, Message: "Error al eliminar producto" };
-    }
+    return this.http.delete<string>(`${this.apiURL}/${productId}`, { headers });
 
-    this.productList.splice(productIndex, 1);
-
-    return { IsSuccess: true, Message: "Se ha eleminado con exito" };
   }
 
 }
