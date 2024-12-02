@@ -52,7 +52,14 @@ export class ProductFormComponent {
     let result: ActionResponse = {} as ActionResponse;
 
     if (this.productData.id_product > 0) {
-      result = this.productService.updateProduct(localProduct);
+      this.productService.updateProduct(localProduct).subscribe({
+        next: response2 => {
+          result = { IsSuccess: true, Message: "Se ha actualizado con exito" };
+        },
+        error: error => {
+          result = { IsSuccess: false, Message: "Error al actualizar producto" };
+        },
+      });
     } else {
       result = this.productService.createProduct(localProduct);
     }

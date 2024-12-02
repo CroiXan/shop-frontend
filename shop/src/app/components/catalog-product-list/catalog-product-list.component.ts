@@ -17,7 +17,11 @@ export class CatalogProductListComponent {
   constructor(private productService: ProductService) { }
 
   ngOnInit(): void {
-    this.products = this.productService.getAllProducts();
+    this.productService.getAllProducts().subscribe(
+      (data) => {
+        this.products = data;
+      }
+    );
   }
 
 }

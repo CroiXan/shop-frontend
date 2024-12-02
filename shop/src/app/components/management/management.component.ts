@@ -44,7 +44,11 @@ export class ManagementComponent {
     this.user = this.userService.getCurrentUser();
     if (this.userRole == "admin" || this.userRole == "editor") {
       this.userList = this.userService.getAllUsers();
-      this.productList = this.productService.getAllProducts();
+      this.productService.getAllProducts().subscribe(
+        (data) => {
+          this.productList = data;
+        }
+      );
     }
   }
 
@@ -72,7 +76,11 @@ export class ManagementComponent {
   savedProduct(){
     this.produtToEdit = {} as Product;
     this.showProductEdit = false;
-    this.productList = this.productService.getAllProducts();
+    this.productService.getAllProducts().subscribe(
+      (data) => {
+        this.productList = data;
+      }
+    );
   }
 
   createProduct(){
@@ -82,6 +90,10 @@ export class ManagementComponent {
   }
 
   refreshProductList(){
-    this.productList = this.productService.getAllProducts();
+    this.productService.getAllProducts().subscribe(
+      (data) => {
+        this.productList = data;
+      }
+    );
   }
 }

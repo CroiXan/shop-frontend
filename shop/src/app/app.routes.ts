@@ -14,6 +14,5 @@ export const routes: Routes = [
     { path: 'recuperar-contrasena', component: PassResetRequestComponent },
     { path: 'cambiar-contrasena', component: PassResetComponent },
     { path: 'perfil', component: ManagementComponent, canActivate: [authGuard] },
-    { path: '', redirectTo: '/catalogo', pathMatch: 'full' },
-    { path: '/', redirectTo: '/catalogo', pathMatch: 'full' }
+    { path: '', redirectTo: '/catalogo', pathMatch: 'full' }
 ];

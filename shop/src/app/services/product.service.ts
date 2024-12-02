@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../models/product';
 import { ActionResponse } from '../models/actionresponse';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -110,13 +112,25 @@ export class ProductService {
     }
   ]
 
-  constructor() { }
+  private apiURL = 'http://localhost:8080/management/product'
+  private credentials = btoa("admin:WpCsGw3jp*");
 
-  getAllProducts(): Product[]{
-    return this.productList;
+  constructor(
+    private http: HttpClient
+  ) { }
+
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      Authorization: `Basic ${this.credentials}`,
+    });
   }
 
-  createProduct(newProduct: Product): ActionResponse{
+  getAllProducts(): Observable<Product[]> {
+    const headers = this.getHeaders();
+    return this.http.get<Product[]>(this.apiURL, { headers });
+  }
+
+  createProduct(newProduct: Product): ActionResponse {
 
     let foundProduct: Product | undefined = this.productList.find(product => product.id_product == newProduct.id_product || product.sku == newProduct.sku);
 
@@ -131,30 +145,35 @@ export class ProductService {
     newProduct.id_product = newId;
 
     this.productList.push(newProduct);
-    
+
     return { IsSuccess: true, Message: "Se ha creado con exito" };
   }
 
-  updateProduct(updatedProduct: Product): ActionResponse{
-    
-    let productIndex = this.productList.findIndex((product) => product.id_product === updatedProduct.id_product && product.sku === updatedProduct.sku);
+  updateProduct(updatedProduct: Product): Observable<Product> {
 
-    if (productIndex === -1) {
-      return { IsSuccess: false, Message: "Error al actualizar producto" };
-    }
+    const headers = this.getHeaders();
 
-    this.productList[productIndex].sku = updatedProduct.sku;
-    this.productList[productIndex].name = updatedProduct.name;
-    this.productList[productIndex].price = updatedProduct.price;
-    this.productList[productIndex].discount = updatedProduct.discount;
-    this.productList[productIndex].category = updatedProduct.category;
-    this.productList[productIndex].description = updatedProduct.description;
-    this.productList[productIndex].stock = updatedProduct.stock;
+    return this.http.get<Product[]>(this.apiURL, { headers }).pipe(
+      switchMap(response1 => {
+        let productIndex = response1.findIndex((product) => product.id_product === updatedProduct.id_product && product.sku === updatedProduct.sku);
 
-    return { IsSuccess: true, Message: "Se ha actualizado con exito" };
+        if (productIndex === -1) {
+          throw new Error("Se ha actualizado con exito");
+        }
+        return this.http.put<Product>(this.apiURL, updatedProduct, { headers }).pipe(
+          catchError(error => {
+            return throwError(() => error);
+          })
+        )
+      }
+      ),
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
   }
 
-  deleteProduct(productId: number): ActionResponse{
+  deleteProduct(productId: number): ActionResponse {
 
     let productIndex = this.productList.findIndex((product) => product.id_product === productId);
 
@@ -162,7 +181,7 @@ export class ProductService {
       return { IsSuccess: false, Message: "Error al eliminar producto" };
     }
 
-    this.productList.splice(productIndex,1);
+    this.productList.splice(productIndex, 1);
 
     return { IsSuccess: true, Message: "Se ha eleminado con exito" };
   }
