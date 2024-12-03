@@ -15,7 +15,7 @@ export class UserService {
   private userRole = new BehaviorSubject<string>("");
   private emailForReset: String = "";
 
-  private apiURL = 'http://172.31.40.56:8082/api/user'
+  private apiURL = 'http://54.233.72.201:8082/api/user'
   private credentials = btoa("admin:WpCsGw3jp*");
 
   constructor(
