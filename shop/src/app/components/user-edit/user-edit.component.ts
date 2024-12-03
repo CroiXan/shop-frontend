@@ -42,7 +42,6 @@ export class UserEditComponent {
       role: ""
     }
 
-
     this.userservice.updateUser(updateUser).subscribe({
       next: response => {
         this.errorMessage = null;
