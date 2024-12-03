@@ -54,29 +54,22 @@ export class ProductFormComponent {
     if (this.productData.id_product > 0) {
       this.productService.updateProduct(localProduct).subscribe({
         next: response2 => {
-          result = { IsSuccess: true, Message: "Se ha actualizado con exito" };
-          alert(result.Message);
-          if (result.IsSuccess) {
-            this.endSaveProduct.emit();
-          }
+          alert("Se ha actualizado con exito");
+          this.endSaveProduct.emit();
         },
         error: error => {
-          result = { IsSuccess: false, Message: "Error al actualizar producto" };
-          alert(result.Message);
+          alert("Error al actualizar producto");
         },
       });
     } else {
       this.productService.createProduct(localProduct).subscribe({
         next: response2 => {
           result = { IsSuccess: true, Message: "Se ha creado con exito" };
-          alert(result.Message);
-          if (result.IsSuccess) {
-            this.endSaveProduct.emit();
-          }
+          alert("Se ha creado con exito");
+          this.endSaveProduct.emit();
         },
         error: error => {
-          result = { IsSuccess: false, Message: "El producto se encuentra registrado" };
-          alert(result.Message);
+          alert("El producto se encuentra registrado");
         },
       });;
     }

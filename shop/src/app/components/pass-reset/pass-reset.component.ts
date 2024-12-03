@@ -34,12 +34,15 @@ export class PassResetComponent {
   }
 
   onSubmit() {
-    let response = this.userservice.resetPassword(this.passwordForm.get('password')?.value);
-    alert(response.Message);
-    if (response.IsSuccess) {
-      this.router.navigate(['/login']);
-    }
-    
+    this.userservice.resetPassword(this.passwordForm.get('password')?.value).subscribe({
+      next: response2 => {
+        alert("Se ha actualizado la Contraseña");
+        this.router.navigate(['/login']);
+      },
+      error: error => {
+        alert("Error al actualizar contraseña");
+      },
+    });  
   }
 
   get password() { return this.passwordForm.get('password') }

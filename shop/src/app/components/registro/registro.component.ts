@@ -21,38 +21,39 @@ export class RegistroComponent {
   errorMessage: string | null = null;
 
   constructor(
-    private formBuilder: FormBuilder, 
+    private formBuilder: FormBuilder,
     private userservice: UserService,
     private router: Router) { }
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(3),Validators.maxLength(50)]],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]],
       confirmpass: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]],
-    },{
-      validators: samePasswordValidator('password','confirmpass')
+    }, {
+      validators: samePasswordValidator('password', 'confirmpass')
     });
   }
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      var response = this.userservice.createUser(
-        this.registerForm.get('name')?.value, 
+      this.userservice.createUser(
+        this.registerForm.get('name')?.value,
         this.registerForm.get('password')?.value,
         this.registerForm.get('email')?.value,
-        this.registerForm.get('phone')?.value);
-      
-      if (response.IsSuccess) {
-        this.errorMessage = null;
-        alert(response.Message);
-        this.router.navigate(['/login']);
-      }else{
-        this.errorMessage = response.Message;
-      }
-        
+        this.registerForm.get('phone')?.value).subscribe({
+          next: response2 => {
+            this.errorMessage = null;
+            alert("Se ha registrado con exito");
+            this.router.navigate(['/login']);
+          },
+          error: error => {
+            this.errorMessage = error.Message;
+          },
+        });
+
     } else {
       this.registerForm.markAllAsTouched();
     }

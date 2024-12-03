@@ -43,7 +43,11 @@ export class ManagementComponent {
     });
     this.user = this.userService.getCurrentUser();
     if (this.userRole == "admin" || this.userRole == "editor") {
-      this.userList = this.userService.getAllUsers();
+       this.userService.getAllUsers().subscribe(
+        (data) => {
+          this.userList = data;
+        }
+      );
       this.productService.getAllProducts().subscribe(
         (data) => {
           this.productList = data;

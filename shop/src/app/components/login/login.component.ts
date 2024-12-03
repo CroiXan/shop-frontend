@@ -18,16 +18,16 @@ import { ActionResponse } from '../../models/actionresponse';
 })
 export class LoginComponent {
 
-  loginForm!: FormGroup; 
-  isLoading = false; 
+  loginForm!: FormGroup;
+  isLoading = false;
   errorMessage: string | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private userService: UserService
-  ){}
-  
+  ) { }
+
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -45,18 +45,17 @@ export class LoginComponent {
 
     this.isLoading = true;
 
-    let result: ActionResponse = this.userService
-      .login(this.loginForm.get('email')?.value,this.loginForm.get('password')?.value);
-
-    this.isLoading = false;
-
-    if (result.IsSuccess) {
-      alert(result.Message);
-      this.router.navigate(['/']);
-    }else{
-      this.errorMessage = result.Message;
-    }
-    
+    this.userService.login(this.loginForm.get('email')?.value, this.loginForm.get('password')?.value).subscribe({
+      next: response => {
+        this.isLoading = false;
+        alert("Se ha logueado");
+        this.router.navigate(['/']);
+      },
+      error: err => {
+        this.isLoading = false;
+        this.errorMessage = err.Message;
+      }
+    });
   }
 
   get email() { return this.loginForm.get('email') }

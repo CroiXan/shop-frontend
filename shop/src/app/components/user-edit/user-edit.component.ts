@@ -42,14 +42,16 @@ export class UserEditComponent {
       role: ""
     }
 
-    let response: ActionResponse = this.userservice.updateUser(updateUser);
 
-    if (response.IsSuccess) {
-      this.errorMessage=null;
-      this.buttonSaveEdit.emit();
-    }else{
-      this.errorMessage=response.Message;
-    }
+    this.userservice.updateUser(updateUser).subscribe({
+      next: response => {
+        this.errorMessage = null;
+        this.buttonSaveEdit.emit();
+      },
+      error: err => {
+        this.errorMessage = err.message;
+      }
+    });
 
   }
 

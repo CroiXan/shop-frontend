@@ -29,13 +29,16 @@ export class UserItemComponent {
   }
   
   updateRole(): void {
-    let response = this.userservice.changeRole(this.userData.id_user,this.formUser.get('selector')?.value);
-    if (response.IsSuccess) {
-      this.showConfirm = false;
-    }else{
-      this.formUser.get('selector')?.setValue(this.userData.role);
-    }
-    alert(response.Message);
+    this.userservice.changeRole(this.userData.id_user,this.formUser.get('selector')?.value).subscribe({
+      next: response2 => {
+        alert("Se ha actualizado el usuario");
+        this.showConfirm = false;
+      },
+      error: error => {
+        alert("Error al actualizar usuario");
+        this.formUser.get('selector')?.setValue(this.userData.role);
+      },
+    });
   }
 
   onValueChange() {
