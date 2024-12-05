@@ -10,7 +10,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class UserService {
 
-  private userSession: SessionValues = {} as SessionValues;
+  private userSession: SessionValues = {
+    id_user: 0,
+    name: '',
+    email: '',
+    role: '',
+    phone: ''
+  };
   private isLoggedIn = new BehaviorSubject<boolean>(false);
   private userRole = new BehaviorSubject<string>("");
   private emailForReset: String = "";

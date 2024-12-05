@@ -6,9 +6,11 @@ import { authGuard } from './auth.guard';
 import { PassResetRequestComponent } from './components/pass-reset-request/pass-reset-request.component';
 import { PassResetComponent } from './components/pass-reset/pass-reset.component';
 import { CatalogProductListComponent } from './components/catalog-product-list/catalog-product-list.component';
+import { ShopCartComponent } from './components/shop-cart/shop-cart.component';
 
 export const routes: Routes = [
     { path: 'catalogo', component: CatalogProductListComponent },
+    { path: 'shopcart', component: ShopCartComponent },
     { path: 'registro', component: RegistroComponent },
     { path: 'login', component: LoginComponent },
     { path: 'recuperar-contrasena', component: PassResetRequestComponent },
