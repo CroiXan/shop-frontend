@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PassResetRequestComponent } from './pass-reset-request.component';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('PassResetRequestComponent', () => {
   let component: PassResetRequestComponent;
@@ -8,7 +9,9 @@ describe('PassResetRequestComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PassResetRequestComponent]
+      imports: [PassResetRequestComponent,
+        HttpClientModule
+      ]
     })
     .compileComponents();
 

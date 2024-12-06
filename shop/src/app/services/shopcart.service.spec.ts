@@ -37,7 +37,7 @@ describe('ShopcartService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should create a shopping cart', () => {
+  it('Crear shopping cart', () => {
     const mockCart = { id_order: 1, create_date: '2024-12-05', id_user: 1, total: 0, status: 'Creado' };
     mockUserService.getSession.and.returnValue({
       id_user: 1,
@@ -57,7 +57,7 @@ describe('ShopcartService', () => {
     req.flush(mockCart);
   });
 
-  it('should add an item to the shopping cart', () => {
+  it('Agrega un item a shopping cart', () => {
     const mockProduct : Product = {
       id_product: 1, name: 'Sample Product',
       sku: '',
@@ -78,7 +78,7 @@ describe('ShopcartService', () => {
     req.flush(mockCartItem);
   });
 
-  it('should delete an item from the shopping cart', () => {
+  it('Borrar un item en el shopping cart', () => {
     const mockProductId = 1;
 
     service.deleteItem(mockProductId).subscribe(() => {
@@ -90,7 +90,7 @@ describe('ShopcartService', () => {
     req.flush({});
   });
 
-  it('should update the order status', () => {
+  it('Actualiza el status de la orden', () => {
     const mockStatus = 'Completado';
 
     service.updateOrder(mockStatus).subscribe(cart => {
@@ -102,7 +102,7 @@ describe('ShopcartService', () => {
     req.flush({});
   });
   
-  it('should handle errors when adding an item', () => {
+  it('Maneja error al agregar un item', () => {
     const mockProduct: Product = {
       id_product: 1, name: 'Error Product', price: 5.0,
       sku: '',
