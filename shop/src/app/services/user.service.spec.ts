@@ -147,10 +147,10 @@ describe('UserService', () => {
   });
 
   it('Reestablecer la contrasena con exito', (done: DoneFn) => {
-    const mockUsers = [{ email: 'test@example.com', id_user: 1 }];
+    const mockUsers = [{ email: 'test@test.com', id_user: 1 }];
     const updatedUser = { ...mockUsers[0], password: 'newpassword' };
 
-    service.setEmailForReset('test@example.com');
+    service.setEmailForReset('test@test.com');
     service.resetPassword('newpassword').subscribe((response) => {
       expect(response.password).toBe('newpassword');
       done();
@@ -166,7 +166,7 @@ describe('UserService', () => {
   });
 
   it('Lanza un error en resetPassword si el usuario no existe', (done: DoneFn) => {
-    service.setEmailForReset('nonexistent@example.com');
+    service.setEmailForReset('noexiste@test.com');
     service.resetPassword('newpassword').subscribe({
       error: (err) => {
         expect(err.message).toBe('Error al actualizar contraseña');

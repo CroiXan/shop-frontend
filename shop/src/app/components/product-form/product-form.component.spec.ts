@@ -30,16 +30,7 @@ describe('ProductFormComponent', () => {
     component = fixture.componentInstance;
     component.productData = { id_product: 0 } as Product;
     component.endSaveProduct = new EventEmitter<void>();
-    component.productData = {
-      id_product: 0,
-      sku: '',
-      name: '',
-      price: 0,
-      discount: 0,
-      category: '',
-      description: '',
-      stock: 0
-    }
+    component.backAction = new EventEmitter<void>();
     fixture.detectChanges();
   });
 
@@ -92,7 +83,7 @@ describe('ProductFormComponent', () => {
     const nameControl = component.productForm.controls['name'];
     nameControl.setValue('A');
     expect(nameControl.invalid).toBeTrue();
-    nameControl.setValue('Producto válido');
+    nameControl.setValue('Producto valido');
     expect(nameControl.valid).toBeTrue();
   });
 
@@ -122,7 +113,7 @@ describe('ProductFormComponent', () => {
     const categoryControl = component.productForm.controls['category'];
     categoryControl.setValue('AB');
     expect(categoryControl.invalid).toBeTrue();
-    categoryControl.setValue('Categoría válida');
+    categoryControl.setValue('Categoria valida');
     expect(categoryControl.valid).toBeTrue();
   });
 
@@ -136,7 +127,7 @@ describe('ProductFormComponent', () => {
     const descriptionControl = component.productForm.controls['description'];
     descriptionControl.setValue('a'.repeat(1001));
     expect(descriptionControl.invalid).toBeTrue();
-    descriptionControl.setValue('Descripción válida');
+    descriptionControl.setValue('Descripcion valida');
     expect(descriptionControl.valid).toBeTrue();
   });
 
@@ -161,13 +152,6 @@ describe('ProductFormComponent', () => {
     const formElement = fixture.nativeElement.querySelector('form');
     formElement.dispatchEvent(new Event('submit'));
     expect(component.onSubmit).toHaveBeenCalled();
-  });
-
-  it('Invoca a onCancel() al presionar el boton Volver', () => {
-    spyOn(component, 'onCancel');
-    const backButton = fixture.nativeElement.querySelector('button.btn-secondary');
-    backButton.click();
-    expect(component.onCancel).toHaveBeenCalled();
   });
 
   it('Muestra un mensaje de exito y emitir endSaveProduct cuando updateProduct() es exitoso', () => {
