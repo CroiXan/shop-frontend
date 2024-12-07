@@ -150,13 +150,13 @@ export class UserService {
         response1.role = newRole;
         return this.http.put<User>(`${this.apiURL}/${userId}`, response1, { headers }).pipe(
           catchError(error => {
-            return throwError(() => error);
+            throw new Error("Error al buscar el usuario")
           })
         )
       }
       ),
       catchError(error => {
-        return throwError(() => error);
+        throw new Error("Error al buscar el usuario")
       })
     );
   }
