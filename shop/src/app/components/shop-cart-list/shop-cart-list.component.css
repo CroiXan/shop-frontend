@@ -1,0 +1,11 @@
+.container {
+    max-width: 900px;
+}
+
+.accordion-button {
+    font-weight: bold;
+}
+
+.table {
+    margin-top: 20px;
+}

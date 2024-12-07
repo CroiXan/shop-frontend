@@ -7,6 +7,8 @@ import { PassResetRequestComponent } from './components/pass-reset-request/pass-
 import { PassResetComponent } from './components/pass-reset/pass-reset.component';
 import { CatalogProductListComponent } from './components/catalog-product-list/catalog-product-list.component';
 import { ShopCartComponent } from './components/shop-cart/shop-cart.component';
+import { OrderingComponent } from './components/ordering/ordering.component';
+import { FinishOrderComponent } from './components/finish-order/finish-order.component';
 
 export const routes: Routes = [
     { path: 'catalogo', component: CatalogProductListComponent },
@@ -16,5 +18,7 @@ export const routes: Routes = [
     { path: 'recuperar-contrasena', component: PassResetRequestComponent },
     { path: 'cambiar-contrasena', component: PassResetComponent },
     { path: 'perfil', component: ManagementComponent, canActivate: [authGuard] },
+    { path: 'procesando-orden', component: OrderingComponent },
+    { path: 'resumen-orden', component: FinishOrderComponent },
     { path: '', redirectTo: '/catalogo', pathMatch: 'full' }
 ];

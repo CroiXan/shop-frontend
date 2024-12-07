@@ -2,21 +2,34 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProductFormComponent } from './product-form.component';
 import { HttpClientModule } from '@angular/common/http';
+import { EventEmitter } from '@angular/core';
+import { Product } from '../../models/product';
+import { ProductService } from '../../services/product.service';
+import { of, throwError } from 'rxjs';
 
 describe('ProductFormComponent', () => {
   let component: ProductFormComponent;
   let fixture: ComponentFixture<ProductFormComponent>;
+  let productServiceSpy: jasmine.SpyObj<ProductService>;
 
   beforeEach(async () => {
+    const spy = jasmine.createSpyObj('ProductService', ['updateProduct', 'createProduct']);
+
     await TestBed.configureTestingModule({
       imports: [ProductFormComponent,
         HttpClientModule
+      ],
+      providers: [
+        { provide: ProductService, useValue: spy }
       ]
     })
     .compileComponents();
 
+    productServiceSpy = TestBed.inject(ProductService) as jasmine.SpyObj<ProductService>;
     fixture = TestBed.createComponent(ProductFormComponent);
     component = fixture.componentInstance;
+    component.productData = { id_product: 0 } as Product;
+    component.endSaveProduct = new EventEmitter<void>();
     component.productData = {
       id_product: 0,
       sku: '',
@@ -157,4 +170,68 @@ describe('ProductFormComponent', () => {
     expect(component.onCancel).toHaveBeenCalled();
   });
 
+  it('Llama a updateProduct() si el ID del producto es mayor a 0', () => {
+    component.productData.id_product = 1;
+    const localProduct = { ...component.productData, sku: '12345', name: 'Producto', price: 100 };
+    productServiceSpy.updateProduct.and.returnValue(of({} as Product));
+
+    component.onSubmit();
+
+    expect(productServiceSpy.updateProduct).toHaveBeenCalledOnceWith(localProduct);
+  });
+
+  it('Muestra un mensaje de exito y emitir endSaveProduct cuando updateProduct() es exitoso', () => {
+    spyOn(window, 'alert');
+    spyOn(component.endSaveProduct, 'emit');
+    component.productData.id_product = 1;
+    productServiceSpy.updateProduct.and.returnValue(of({} as Product));
+
+    component.onSubmit();
+
+    expect(window.alert).toHaveBeenCalledWith('Se ha actualizado con exito');
+    expect(component.endSaveProduct.emit).toHaveBeenCalled();
+  });
+
+  it('Muestra un mensaje de error cuando updateProduct() falla', () => {
+    spyOn(window, 'alert');
+    component.productData.id_product = 1;
+    productServiceSpy.updateProduct.and.returnValue(throwError(() => new Error('Error al actualizar producto')));
+
+    component.onSubmit();
+
+    expect(window.alert).toHaveBeenCalledWith('Error al actualizar producto');
+  });
+
+  it('Llama a createProduct() si el ID del producto es 0', () => {
+    component.productData.id_product = 0;
+    const localProduct = { ...component.productData, sku: '12345', name: 'Producto', price: 100 };
+    productServiceSpy.createProduct.and.returnValue(of({} as Product));
+
+    component.onSubmit();
+
+    expect(productServiceSpy.createProduct).toHaveBeenCalledOnceWith(localProduct);
+  });
+
+  it('Muestra un mensaje de exito y emitir endSaveProduct cuando createProduct() es exitoso', () => {
+    spyOn(window, 'alert');
+    spyOn(component.endSaveProduct, 'emit');
+    component.productData.id_product = 0;
+    productServiceSpy.createProduct.and.returnValue(of({} as Product));
+
+    component.onSubmit();
+
+    expect(window.alert).toHaveBeenCalledWith('Se ha creado con exito');
+    expect(component.endSaveProduct.emit).toHaveBeenCalled();
+  });
+
+  it('Muestra un mensaje de error cuando createProduct() falla', () => {
+    spyOn(window, 'alert');
+    component.productData.id_product = 0;
+    productServiceSpy.createProduct.and.returnValue(throwError(() => new Error('El producto se encuentra registrado')));
+
+    component.onSubmit();
+
+    expect(window.alert).toHaveBeenCalledWith('El producto se encuentra registrado');
+  });
+  
 });

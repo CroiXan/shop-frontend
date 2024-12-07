@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { UserService } from './user.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { User } from '../models/user';
+import { SessionValues } from '../models/sessionvalues';
 
 describe('UserService', () => {
   let service: UserService;
@@ -176,6 +177,64 @@ describe('UserService', () => {
     const req = httpMock.expectOne(service['apiURL']);
     expect(req.request.method).toBe('GET');
     req.flush([]);
+  });
+
+  it('Retorna usuario de sesion correctamente', () => {
+
+    const mockSession = {
+      id_user: 1,
+      name: 'Prueba',
+      email: 'test@test.com',
+      role: 'user',
+      phone: '1234567890',
+    };
+  
+    (service as any).userSession = mockSession;
+  
+    const session = service.getSession();
+    expect(session).toEqual(mockSession);
+  });
+
+  it('Limpia los valores de sesion', () => {
+    const mockSession = {
+      id_user: 1,
+      name: 'Prueba',
+      email: 'test@test.com',
+      role: 'user',
+      phone: '1234567890',
+    };
+  
+    (service as any).userSession = mockSession;
+    service['isLoggedIn'].next(true);
+    service['userRole'].next('user');
+  
+    service.clearSession();
+  
+    expect(service.getSession()).toEqual({} as SessionValues);
+  
+    service.isAuthenticated().subscribe((isLoggedIn) => {
+      expect(isLoggedIn).toBeFalse();
+    });
+  
+    service.getRole().subscribe((role) => {
+      expect(role).toBe('');
+    });
+  });
+
+  it('Obtener listado de usuarios', (done: DoneFn) => {
+    const mockUsers = [
+      { id_user: 1, name: 'Usuario 1', email: 'user1@test.com', role: 'admin', phone: '1234567890', password: '' },
+      { id_user: 2, name: 'Usuario 2', email: 'user2@test.com', role: 'user', phone: '0987654321', password: '' },
+    ];
+
+    service.getAllUsers().subscribe((users) => {
+      expect(users).toEqual(mockUsers);
+      done();
+    });
+  
+    const req = httpMock.expectOne(service['apiURL']);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockUsers); 
   });
 
 });

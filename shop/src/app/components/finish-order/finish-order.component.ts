@@ -2,32 +2,22 @@ import { Component } from '@angular/core';
 import { ShopCartFull } from '../../models/shopcartfull';
 import { CommonModule } from '@angular/common';
 import { ShopcartService } from '../../services/shopcart.service';
-import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
-  selector: 'app-shop-cart',
+  selector: 'app-finish-order',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './shop-cart.component.html',
-  styleUrl: './shop-cart.component.css'
+  templateUrl: './finish-order.component.html',
+  styleUrl: './finish-order.component.css'
 })
-export class ShopCartComponent {
-
+export class FinishOrderComponent {
   shopCartFull!: ShopCartFull;
 
-  constructor(private shopcartService: ShopcartService,
-    private router: Router
-  ) {}
+  constructor(private shopcartService: ShopcartService) { }
 
   ngOnInit(): void {
     this.shopCartFull = this.shopcartService.currentShoppingCart;
   }
-
-  back() {
-    window.history.back();
-  }
-
-  buy() {
-    this.router.navigate(['/procesando-orden']);
-  }
+  
 }

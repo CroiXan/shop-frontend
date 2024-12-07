@@ -2,25 +2,23 @@ import { TestBed } from '@angular/core/testing';
 
 import { ShopcartService } from './shopcart.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ProductService } from './product.service';
 import { UserService } from './user.service';
 import { Product } from '../models/product';
+import { ShopCartItem } from '../models/shopcartitem';
+import { ShopCartFull } from '../models/shopcartfull';
 
 describe('ShopcartService', () => {
   let service: ShopcartService;
   let httpMock: HttpTestingController;
-  let mockProductService: jasmine.SpyObj<ProductService>;
   let mockUserService: jasmine.SpyObj<UserService>;
 
   beforeEach(() => {
-    mockProductService = jasmine.createSpyObj('ProductService', ['getAllProducts']);
     mockUserService = jasmine.createSpyObj('UserService', ['getSession']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         ShopcartService,
-        { provide: ProductService, useValue: mockProductService },
         { provide: UserService, useValue: mockUserService },
       ]
     });
@@ -58,8 +56,9 @@ describe('ShopcartService', () => {
   });
 
   it('Agrega un item a shopping cart', () => {
-    const mockProduct : Product = {
-      id_product: 1, name: 'Sample Product',
+    const mockProduct: Product = {
+      id_product: 1, 
+      name: 'Producto de prueba',
       sku: '',
       price: 0,
       discount: 0,
@@ -67,27 +66,46 @@ describe('ShopcartService', () => {
       description: '',
       stock: 0
     };
-    const mockCartItem = { id_product: 1, amount: 1, product: mockProduct };
+    const mockCartItem: ShopCartItem = {
+      id_product: 1, amount: 1, product: mockProduct,
+      id_orderitem: 0,
+      id_order: 0,
+      sku: ''
+    };
+    const mockOrderData = { 
+      id_order: 123, 
+      create_date: '', 
+      id_user: 0, 
+      total: 0, 
+      status: '' 
+    };
+    const initialCart:ShopCartFull = { cart_data: {
+      id_order: 123,
+      create_date: '',
+      id_user: 0,
+      total: 0,
+      status: ''
+    }, cart_items: [] };
+
+    service.currentShoppingCart = initialCart;
 
     service.addItem(mockProduct).subscribe(item => {
-      expect(item.product).toEqual(mockProduct);
+      expect(item).toEqual(mockCartItem);
+      expect(service.currentShoppingCart.cart_items.length).toBe(1);
+      expect(service.currentShoppingCart.cart_items[0].id_product).toBe(mockProduct.id_product);
     });
-
-    const req = httpMock.expectOne('http://localhost:8081/shop/item/add');
-    expect(req.request.method).toBe('POST');
-    req.flush(mockCartItem);
-  });
-
-  it('Borrar un item en el shopping cart', () => {
-    const mockProductId = 1;
-
-    service.deleteItem(mockProductId).subscribe(() => {
-      expect(true).toBeTrue(); // Confirm the observable completes
+  
+    const reqAdd = httpMock.expectOne('http://localhost:8081/shop/item/add');
+    expect(reqAdd.request.method).toBe('POST');
+    expect(reqAdd.request.body).toEqual({
+      id_order: initialCart.cart_data.id_order,
+      id_product: mockProduct.id_product,
     });
-
-    const req = httpMock.expectOne('http://localhost:8081/shop/item/add');
-    expect(req.request.method).toBe('POST');
-    req.flush({});
+    reqAdd.flush(mockCartItem); 
+  
+    const reqRefresh = httpMock.expectOne(`http://localhost:8081/shop/order/${initialCart.cart_data.id_order}`);
+    expect(reqRefresh.request.method).toBe('GET');
+    reqRefresh.flush(mockOrderData); 
   });
 
   it('Actualiza el status de la orden', () => {
@@ -101,7 +119,7 @@ describe('ShopcartService', () => {
     expect(req.request.method).toBe('PUT');
     req.flush({});
   });
-  
+
   it('Maneja error al agregar un item', () => {
     const mockProduct: Product = {
       id_product: 1, name: 'Error Product', price: 5.0,
@@ -122,5 +140,97 @@ describe('ShopcartService', () => {
     const req = httpMock.expectOne('http://localhost:8081/shop/item/add');
     req.flush('Error', { status: 500, statusText: 'Server Error' });
   });
+
+  it('Se lalama nueva informacion al usar refreshOrder', () => {
+    const mockOrderData = {
+      id_order: 123,
+      create_date: '',
+      id_user: 1,
+      total: 150,
+      status: ''
+    };
+
+    const initialCart = {
+      cart_data: { id_order: 123, create_date: '', id_user: 0, total: 0, status: '' },
+      cart_items: []
+    };
+
+    service.currentShoppingCart = initialCart;
+
+    const refreshOrderSpy = spyOn<any>(service, 'refreshOrder').and.callThrough();
+    (service as any).refreshOrder();
+
+    const req = httpMock.expectOne(`http://localhost:8081/shop/order/${initialCart.cart_data.id_order}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockOrderData);
+
+    expect(service.currentShoppingCart.cart_data).toEqual(mockOrderData);
+    expect(refreshOrderSpy).toHaveBeenCalled();
+  });
+
+  it('Obtiene las ordenes de un usuario guardadas en currentUserShoppingCartList', () => {
+    const mockUserId = 1;
+    const mockOrders = [
+      { id_order: 101, create_date: '', id_user: mockUserId, total: 200, status: '' },
+      { id_order: 102, create_date: '', id_user: mockUserId, total: 300, status: '' }
+    ];
   
+    const mockCartItemsOrder101: ShopCartItem[] = [
+      {
+        id_product: 1, amount: 2,
+        id_orderitem: 0,
+        id_order: 0,
+        sku: '',
+        product:  {} as Product
+      },
+      {
+        id_product: 2, amount: 1,
+        id_orderitem: 0,
+        id_order: 0,
+        sku: '',
+        product:  {} as Product
+      }
+    ];
+  
+    const mockCartItemsOrder102: ShopCartItem[] = [
+      {
+        id_product: 3, amount: 1,
+        id_orderitem: 0,
+        id_order: 0,
+        sku: '',
+        product:  {} as Product
+      },
+      {
+        id_product: 4, amount: 2,
+        id_orderitem: 0,
+        id_order: 0,
+        sku: '',
+        product: {} as Product
+      }
+    ];
+  
+    service.getAllShopcartByUser(mockUserId).subscribe(carts => {
+      expect(carts.length).toBe(2);
+      expect(service.currentUserShoppingCartList.length).toBe(2);
+  
+      expect(service.currentUserShoppingCartList[0].cart_data).toEqual(mockOrders[0]);
+      expect(service.currentUserShoppingCartList[0].cart_items).toEqual(mockCartItemsOrder101);
+  
+      expect(service.currentUserShoppingCartList[1].cart_data).toEqual(mockOrders[1]);
+      expect(service.currentUserShoppingCartList[1].cart_items).toEqual(mockCartItemsOrder102);
+    });
+  
+    const reqOrders = httpMock.expectOne(`http://localhost:8081/shop/order/user/${mockUserId}`);
+    expect(reqOrders.request.method).toBe('GET');
+    reqOrders.flush(mockOrders); 
+
+    const reqItemsOrder101 = httpMock.expectOne(`http://localhost:8081/shop/item/101`);
+    expect(reqItemsOrder101.request.method).toBe('GET');
+    reqItemsOrder101.flush(mockCartItemsOrder101);
+  
+    const reqItemsOrder102 = httpMock.expectOne(`http://localhost:8081/shop/item/102`);
+    expect(reqItemsOrder102.request.method).toBe('GET');
+    reqItemsOrder102.flush(mockCartItemsOrder102);
+  });
+
 });

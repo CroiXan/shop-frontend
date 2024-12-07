@@ -9,6 +9,7 @@ import { Product } from '../../models/product';
 import { ProductService } from '../../services/product.service';
 import { ProductManagerListComponent } from "../product-manager-list/product-manager-list.component";
 import { ProductFormComponent } from '../product-form/product-form.component';
+import { ShopCartListComponent } from "../shop-cart-list/shop-cart-list.component";
 
 @Component({
   selector: 'app-management',
@@ -19,7 +20,8 @@ import { ProductFormComponent } from '../product-form/product-form.component';
     UserEditComponent,
     UserItemComponent,
     ProductManagerListComponent,
-    ProductFormComponent
+    ProductFormComponent,
+    ShopCartListComponent
 ],
   templateUrl: './management.component.html',
   styleUrl: './management.component.css'

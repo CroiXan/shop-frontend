@@ -26,22 +26,14 @@ export class ShopcartService {
 
   currentUserShoppingCartList: ShopCartFull[] = []
 
-  private productList: Product[] = []
-
   private apiURL = 'http://localhost:8081/shop'
   private credentials = btoa("admin:WpCsGw3jp*");
 
   constructor(
     private http: HttpClient,
-    private productService: ProductService,
     private userService: UserService
   ) { }
 
-  ngOnInit(): void {
-    this.productService.getAllProducts().subscribe(allProducts => {
-      this.productList = allProducts;
-    });
-  }
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
       Authorization: `Basic ${this.credentials}`,
@@ -85,29 +77,7 @@ export class ShopcartService {
           } else {
             this.currentShoppingCart.cart_items[itemIndex].amount += 1;
           }
-        }
-      })
-    )
-  }
-
-  deleteItem(productId: number) : Observable<void> {
-    let addRequest = {
-      id_order: this.currentShoppingCart,
-      id_product: productId
-    }
-    const headers = this.getHeaders();
-    return this.http.post<void>(`${this.apiURL}/item/add`, addRequest, { headers }).pipe(
-      catchError(err => {
-        throw new Error("No se ha logrado quitar el producto");
-      }),
-      tap(response => {
-        let itemIndex = this.currentShoppingCart.cart_items.findIndex((item) => item.id_product === productId);
-        if (itemIndex > -1) {
-          if (this.currentShoppingCart.cart_items[itemIndex].amount = 1) {
-            this.currentShoppingCart.cart_items.splice(itemIndex,1);
-          }else{
-            this.currentShoppingCart.cart_items[itemIndex].amount += -1;
-          } 
+          this.refreshOrder();
         }
       })
     )
@@ -138,7 +108,7 @@ export class ShopcartService {
   getAllShopcartByUser(userId: number): Observable<any> {
     this.currentUserShoppingCartList = []
     const headers = this.getHeaders();
-    return this.http.get<ShopCart[]>(`${this.apiURL}/order`, { headers }).pipe(
+    return this.http.get<ShopCart[]>(`${this.apiURL}/order/user/${userId}`, { headers }).pipe(
       mergeMap(orderList => {
         const peticiones = orderList.map(order => {
           let localCart: ShopCartFull = {
@@ -146,18 +116,12 @@ export class ShopcartService {
             cart_items: []
           };
 
-          let localShopItem: ShopCartItem[] = [];
-
           let addedInedx = this.currentUserShoppingCartList.push(localCart) - 1;
 
           return this.http.get<ShopCartItem[]>(`${this.apiURL}/item/${order.id_order}`, { headers }).pipe(
             map(cartitems => {
               cartitems.forEach(cartitem => {
-                let localProduct = this.getproductData(cartitem.id_product);
-                if (localProduct != undefined) {
-                  cartitem.product = localProduct;
-                  this.currentUserShoppingCartList[addedInedx].cart_items.push(cartitem);
-                }
+                this.currentUserShoppingCartList[addedInedx].cart_items.push(cartitem);
               });
               return this.currentUserShoppingCartList;
             })
@@ -168,7 +132,10 @@ export class ShopcartService {
     );
   }
 
-  private getproductData(productId: number): Product | undefined {
-    return this.productList.find(product => product.id_product === productId);
+  private refreshOrder(){
+    const headers = this.getHeaders();
+    this.http.get<ShopCart>(`${this.apiURL}/order/${this.currentShoppingCart.cart_data.id_order}`, { headers }).subscribe(result => {
+      this.currentShoppingCart.cart_data = result;
+    });
   }
 }

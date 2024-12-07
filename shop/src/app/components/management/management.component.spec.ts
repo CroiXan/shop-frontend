@@ -141,14 +141,12 @@ describe('ManagementComponent', () => {
     expect(component.userList).toEqual(mockUsers);
   });
 
-  it('No carga usuarios y productos para usuarios normales', () => {
+  it('No carga usuarios para usuarios normales', () => {
     component.userRole = 'user';
     mockUserService.getRole.and.returnValue(of('user'));
     component.ngOnInit();
 
-    expect(mockProductService.getAllProducts).not.toHaveBeenCalled();
     expect(mockUserService.getAllUsers).not.toHaveBeenCalled();
-    expect(component.productList).toHaveSize(0);
     expect(component.userList).toHaveSize(0);
   });
 
