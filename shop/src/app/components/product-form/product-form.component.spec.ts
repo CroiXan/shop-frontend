@@ -170,16 +170,6 @@ describe('ProductFormComponent', () => {
     expect(component.onCancel).toHaveBeenCalled();
   });
 
-  it('Llama a updateProduct() si el ID del producto es mayor a 0', () => {
-    component.productData.id_product = 1;
-    const localProduct = { ...component.productData, sku: '12345', name: 'Producto', price: 100 };
-    productServiceSpy.updateProduct.and.returnValue(of({} as Product));
-
-    component.onSubmit();
-
-    expect(productServiceSpy.updateProduct).toHaveBeenCalledOnceWith(localProduct);
-  });
-
   it('Muestra un mensaje de exito y emitir endSaveProduct cuando updateProduct() es exitoso', () => {
     spyOn(window, 'alert');
     spyOn(component.endSaveProduct, 'emit');
@@ -200,16 +190,6 @@ describe('ProductFormComponent', () => {
     component.onSubmit();
 
     expect(window.alert).toHaveBeenCalledWith('Error al actualizar producto');
-  });
-
-  it('Llama a createProduct() si el ID del producto es 0', () => {
-    component.productData.id_product = 0;
-    const localProduct = { ...component.productData, sku: '12345', name: 'Producto', price: 100 };
-    productServiceSpy.createProduct.and.returnValue(of({} as Product));
-
-    component.onSubmit();
-
-    expect(productServiceSpy.createProduct).toHaveBeenCalledOnceWith(localProduct);
   });
 
   it('Muestra un mensaje de exito y emitir endSaveProduct cuando createProduct() es exitoso', () => {

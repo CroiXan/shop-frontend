@@ -9,7 +9,7 @@ import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
 })
 export class ProductService {
 
-  private apiURL = 'http://172.31.46.236:8080/management/product'
+  private apiURL = 'http://localhost:8080/management/product'
   private credentials = btoa("admin:WpCsGw3jp*");
 
   constructor(
