@@ -26,7 +26,7 @@ export class ShopcartService {
 
   currentUserShoppingCartList: ShopCartFull[] = []
 
-  private apiURL = 'http://localhost:8081/shop'
+  private apiURL = 'http://15.228.247.191:8081/shop'
   private credentials = btoa("admin:WpCsGw3jp*");
 
   constructor(
