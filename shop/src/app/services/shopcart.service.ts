@@ -26,7 +26,7 @@ export class ShopcartService {
 
   currentUserShoppingCartList: ShopCartFull[] = []
 
-  private apiURL = 'http://18.228.4.183:8081/shop'
+  private apiURL = 'http://localhost:8081/shop'
   private credentials = btoa("admin:WpCsGw3jp*");
 
   constructor(
@@ -49,6 +49,10 @@ export class ShopcartService {
       total: 0,
       status: 'Creado'
     }
+    this.currentShoppingCart = {
+      cart_data: {} as ShopCart,
+      cart_items: []
+    };
     return this.http.post<ShopCart>(`${this.apiURL}/order`, newOrder, { headers }).pipe(
       map(cart => {
         console.log(cart)
@@ -83,12 +87,12 @@ export class ShopcartService {
     )
   }
 
-  updateOrder(status:string): Observable<ShopCartFull> {
+  updateOrder(status: string): Observable<ShopCartFull> {
     const headers = this.getHeaders();
     this.currentShoppingCart.cart_data.status = status;
     return this.http.put<ShopCart>(`${this.apiURL}/order`, this.currentShoppingCart.cart_data.status, { headers }).pipe(
       map(order => {
-        if (status == "Cancelado" ||status == "Completado") {
+        if (status == "Cancelado" || status == "Completado") {
           this.currentShoppingCart = {
             cart_data: {
               id_order: 0,
@@ -132,7 +136,20 @@ export class ShopcartService {
     );
   }
 
-  private refreshOrder(){
+  cleanCurrentShopCart() {
+    this.currentShoppingCart = {
+      cart_data:  {
+        id_order: 0,
+        create_date: '',
+        id_user: 0,
+        total: 0,
+        status: ''
+      },
+      cart_items: []
+    };
+  }
+
+  private refreshOrder() {
     const headers = this.getHeaders();
     this.http.get<ShopCart>(`${this.apiURL}/order/${this.currentShoppingCart.cart_data.id_order}`, { headers }).subscribe(result => {
       this.currentShoppingCart.cart_data = result;

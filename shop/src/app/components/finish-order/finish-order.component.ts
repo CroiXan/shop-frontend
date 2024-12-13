@@ -18,6 +18,7 @@ export class FinishOrderComponent {
 
   ngOnInit(): void {
     this.shopCartFull = this.shopcartService.currentShoppingCart;
+    this.shopcartService.cleanCurrentShopCart();
   }
   
 }
